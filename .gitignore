@@ -1,0 +1,38 @@
+# deps / builds
+node_modules/
+dist/
+dist-electron/
+out/
+build/
+release/
+*.tsbuildinfo
+
+# caches
+.vite/
+.cache/
+.turbo/
+coverage/
+
+# runtime data (catalogs, previews, models) — never commit user data
+.swell/
+*.swellcatalog
+*.swellcatalog-wal
+*.swellcatalog-shm
+previews/
+models/*.onnx
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# logs
+*.log
+npm-debug.log*
+
+# scratch
+tmp-assets/
+image-search/
+Unselected files/

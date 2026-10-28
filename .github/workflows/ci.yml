@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint · types · tests · build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      # §3.2 — zero border strokes, enforced mechanically rather than by review.
+      - name: Lint borderless
+        run: npm run lint:borderless
+
+      # No GL compiler exists in CI; parse every exported GLSL program instead.
+      - name: Lint shaders
+        run: npm run lint:shaders
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: swell-dist
+          path: apps/desktop/dist
+          retention-days: 7
+
+  desktop:
+    name: Package (optional native deps)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Packaging needs better-sqlite3 / onnxruntime-node, which are optional at
+    # install time (§2.4). Keep it non-blocking until M3 lands the Electron build.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci --no-audit --no-fund
+      - name: Package
+        run: npm run package

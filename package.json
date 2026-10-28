@@ -1,0 +1,38 @@
+{
+  "name": "swell",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Swell \u2014 a local-first, non-destructive RAW photo catalog and editor.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "apps/desktop",
+    "packages/schema",
+    "packages/shared",
+    "packages/shaders",
+    "packages/models"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace apps/desktop",
+    "build": "npm run build --workspace apps/desktop",
+    "preview": "npm run preview --workspace apps/desktop",
+    "typecheck": "tsc -b apps/desktop packages/schema packages/shared packages/shaders packages/models",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint:borderless": "node scripts/check-borderless.mjs",
+    "lint:shaders": "node scripts/check-shaders.mjs",
+    "lint": "npm run lint:borderless && npm run lint:shaders && npm run typecheck",
+    "verify": "npm run lint && npm run test && npm run build",
+    "desktop": "npm run desktop --workspace apps/desktop",
+    "package": "npm run package --workspace apps/desktop"
+  },
+  "devDependencies": {
+    "@shaderfrog/glsl-parser": "^7.0.1",
+    "@types/node": "22.20.5",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  },
+  "engines": {
+    "node": ">=20.19"
+  }
+}

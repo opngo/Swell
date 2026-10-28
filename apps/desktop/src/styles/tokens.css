@@ -1,0 +1,331 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   Swell design tokens — §3 "Design System (No Borders)"
+
+   The rule: no border strokes, anywhere. Separation comes from tonal
+   elevation, spacing, soft shadows, blur, shape and motion.
+   ========================================================================== */
+
+@theme {
+  /* surfaces — lightness steps, no borders */
+  --color-s0: oklch(0.16 0.008 250);
+  --color-s1: oklch(0.19 0.009 250);
+  --color-s2: oklch(0.22 0.01 250);
+  --color-s3: oklch(0.26 0.011 250);
+  --color-s4: oklch(0.3 0.012 250);
+  --color-s5: oklch(0.36 0.012 250);
+  --color-s6: oklch(0.42 0.012 250);
+
+  /* text */
+  --color-t1: oklch(0.96 0.004 250);
+  --color-t2: oklch(0.76 0.008 250);
+  --color-t3: oklch(0.56 0.01 250);
+
+  /* accent — swapped at runtime by Settings → Appearance */
+  --color-accent: var(--swell-accent, oklch(0.78 0.12 200));
+  --color-accent-soft: var(--swell-accent-soft, oklch(0.78 0.12 200 / 0.16));
+  --color-accent-deep: var(--swell-accent-deep, oklch(0.62 0.13 200));
+  --color-on-accent: oklch(0.18 0.02 250);
+
+  /* semantic */
+  --color-ok: oklch(0.78 0.14 150);
+  --color-warn: oklch(0.82 0.14 80);
+  --color-danger: oklch(0.68 0.19 25);
+  --color-info: oklch(0.76 0.11 230);
+
+  /* shape */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* type */
+  --font-sans: "Geist Variable", "Inter", "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+  --font-display: "Bricolage Grotesque Variable", "Sora", "Space Grotesk", var(--font-sans);
+  --font-accent: "Fraunces Variable", "Instrument Serif", ui-serif, Georgia, serif;
+
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 13px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+
+  /* motion */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  /* elevation — shadows only, never strokes */
+  --e1: 0 1px 2px oklch(0 0 0 / 0.25), 0 4px 12px oklch(0 0 0 / 0.18);
+  --e2: 0 2px 6px oklch(0 0 0 / 0.3), 0 12px 32px oklch(0 0 0 / 0.28);
+  --e3: 0 8px 24px oklch(0 0 0 / 0.35), 0 32px 64px oklch(0 0 0 / 0.35);
+  --e-inset: inset 0 1px 2px oklch(0 0 0 / 0.35);
+
+  /* focus halo — the accessible replacement for an outline */
+  --halo: 0 0 0 3px var(--swell-accent-soft, oklch(0.78 0.12 200 / 0.16)),
+    0 0 0 5px oklch(0.78 0.12 200 / 0.22);
+  --halo-strong: 0 0 0 4px oklch(0.78 0.12 200 / 0.34), 0 0 0 8px oklch(0.78 0.12 200 / 0.18);
+
+  /* density (Comfortable / Compact / Dense) */
+  --row-h: 30px;
+  --pad-panel: 12px;
+  --pad-section: 16px;
+  --ui-scale: 1;
+
+  /* canvas backdrop behind the photo — always neutral */
+  --canvas: oklch(0.145 0.002 250);
+
+  color-scheme: dark;
+}
+
+html[data-density="comfortable"] {
+  --row-h: 36px;
+  --pad-panel: 16px;
+  --pad-section: 20px;
+}
+html[data-density="dense"] {
+  --row-h: 26px;
+  --pad-panel: 8px;
+  --pad-section: 12px;
+}
+
+html[data-backdrop="mid-gray"] { --canvas: oklch(0.32 0 0); }
+html[data-backdrop="black"] { --canvas: oklch(0 0 0); }
+html[data-backdrop="white"] { --canvas: oklch(0.96 0 0); }
+html[data-backdrop="match-theme"] { --canvas: oklch(0.19 0.009 250); }
+
+html[data-contrast-focus="true"] {
+  --halo: var(--halo-strong);
+}
+
+/* ------------------------------------------------------------------- base */
+
+@layer base {
+  /* THE RULE: zero border strokes. Separation is tonal, spatial, or shadowed. */
+  *,
+  *::before,
+  *::after {
+    border-width: 0;
+    border-style: none;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  body {
+    background: var(--color-s0);
+    color: var(--color-t1);
+    font-family: var(--font-sans);
+    font-size: calc(13px * var(--ui-scale));
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "cv01";
+  }
+
+  /* every numeric readout is tabular so sliders never jitter (§2.5) */
+  input,
+  output,
+  [data-numeric],
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* focus = soft halo + a slight lift, never an outline */
+  :focus {
+    outline: none;
+  }
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--halo);
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background: var(--swell-accent-soft, oklch(0.78 0.12 200 / 0.28));
+    color: var(--color-t1);
+  }
+
+  /* overlay scrollbars: thin, pill thumb, tonal */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-s4) transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  /* tonal pill — no transparent-border inset trick, no stroke anywhere */
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-s4);
+    border-radius: var(--radius-pill);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-s5);
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  canvas {
+    display: block;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    cursor: pointer;
+  }
+
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+}
+
+/* -------------------------------------------------------------- utilities */
+
+@utility surface-1 {
+  background: var(--color-s1);
+}
+@utility surface-2 {
+  background: var(--color-s2);
+}
+@utility surface-3 {
+  background: var(--color-s3);
+}
+
+@utility e1 { box-shadow: var(--e1); }
+@utility e2 { box-shadow: var(--e2); }
+@utility e3 { box-shadow: var(--e3); }
+@utility e-inset { box-shadow: var(--e-inset); }
+
+@utility halo { box-shadow: var(--halo); }
+@utility halo-strong { box-shadow: var(--halo-strong); }
+
+@utility canvas-bg { background: var(--canvas); }
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+@utility text-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+@utility text-accent-serif {
+  font-family: var(--font-accent);
+  font-variation-settings: "SOFT" 40, "WONK" 1;
+}
+
+@utility numeric {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+@utility glass {
+  background: oklch(0.22 0.01 250 / 0.72);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+}
+
+@utility glass-strong {
+  background: oklch(0.24 0.011 250 / 0.86);
+  backdrop-filter: blur(28px) saturate(1.35);
+  -webkit-backdrop-filter: blur(28px) saturate(1.35);
+}
+
+/* ----------------------------------------------------------- keyframes */
+
+@keyframes swell-wave {
+  0% { background-position: -140% 0; }
+  100% { background-position: 240% 0; }
+}
+
+@keyframes swell-shimmer {
+  0% { transform: translateX(-120%) skewX(-12deg); }
+  100% { transform: translateX(320%) skewX(-12deg); }
+}
+
+@keyframes swell-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+@keyframes swell-drift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -6px, 0) scale(1.015); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+.progress-wave {
+  background-image: linear-gradient(
+    100deg,
+    transparent 20%,
+    oklch(1 0 0 / 0.22) 42%,
+    oklch(1 0 0 / 0.32) 50%,
+    oklch(1 0 0 / 0.22) 58%,
+    transparent 80%
+  );
+  background-size: 220% 100%;
+  animation: swell-wave 1.6s linear infinite;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    oklch(1 0 0 / 0.14) 50%,
+    transparent 70%
+  );
+  animation: swell-shimmer 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+html[data-reduce-motion="true"] {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

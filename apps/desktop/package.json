@@ -1,0 +1,45 @@
+{
+  "name": "@swell/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Swell desktop app \u2014 Electron shell + React renderer + WebGL2 engine.",
+  "main": "dist-electron/main/index.js",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173",
+    "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4173",
+    "desktop": "concurrently -k \"vite build --watch\" \"electron .\"",
+    "package": "electron-builder",
+    "desktop:setup": "npm i -D electron electron-builder concurrently"
+  },
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@swell/models": "*",
+    "@swell/schema": "*",
+    "@swell/shaders": "*",
+    "@swell/shared": "*",
+    "@tanstack/react-virtual": "^3.14.13",
+    "date-fns": "^4.1.0",
+    "iconoir-react": "^7.12.1",
+    "immer": "^11.0.0",
+    "jotai": "^3.0.1",
+    "motion": "^14.0.0",
+    "react": "^19.3.0",
+    "react-aria-components": "^1.22.0",
+    "react-dom": "^19.3.0",
+    "zod": "^4.6.5",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "tailwindcss": "^4.3.3",
+    "vite": "^7.3.7"
+  }
+}
